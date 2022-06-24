@@ -2,6 +2,6 @@
 """2-floor.py"""
 
 
-def concat(n: float) -> int:
+def floor(n: float) -> int:
     """floor of float"""
     return int(n + 0.5)
