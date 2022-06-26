@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """101-safely_get_value.py"""
-from typing import Any, Union, Mapping, TypeVar
-from types import NoneType
+from typing import Any, Union, Mapping, TypeVar, Optional
 
 T = TypeVar('T')
 
 
 def safely_get_value(dct: Mapping, key: Any,
-                     default: Union[T, NoneType] = None
+                     default: Optional[T] = None
                      ) -> Union[Any, T]:
     """gets first element if not empty"""
     if key in dct:
