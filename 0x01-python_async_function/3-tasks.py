@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""3-tasks.py"""
+"""contains a function that creates task that executes wait_random"""
 import asyncio
 wait_random = __import__('0-basic_async_syntax').wait_random
 
 
-def task_wait_random(max_delay):
+def task_wait_random(max_delay: int) -> asyncio.Task:
+    """creates task that executes wait_random"""
     return asyncio.create_task(wait_random(max_delay))
