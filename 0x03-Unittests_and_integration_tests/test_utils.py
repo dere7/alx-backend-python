@@ -41,24 +41,22 @@ class TestAccessNestedMap(unittest.TestCase):
 class TestGetJson(unittest.TestCase):
     """tests getJson methods"""
 
-    def get_request(self, mock, payload):
-        """gets request result"""
-        mock.json.return_value = payload
-        return mock
-
     @parameterized.expand([
         ("http://example.com", {"payload": True}),
         ("http://holberton.io", {"payload": False})
     ])
-    @unittest.mock.patch("utils.requests")
+    @unittest.mock.patch("requests.get")
     def test_get_json(self, test_url: str,
                       test_payload: Dict, mock_request: MagicMock):
         """tests get_json method from utils"""
-        mock_request.get.side_effect = self.get_request(
-            mock_request, test_payload)
-        get_json(test_url)
-        mock_request.get.assert_called_once_with(test_url)
-        self.assertEqual(mock_request.json.return_value, test_payload)
+        def get_mock_requests(url: str) -> MagicMock:
+            mock = MagicMock()
+            mock.json.return_value = test_payload
+            return mock
+        mock_request.side_effect = get_mock_requests
+        result = get_json(test_url)
+        mock_request.assert_called_once_with(test_url)
+        self.assertEqual(result, test_payload)
 
 
 class TestMemoize(unittest.TestCase):
@@ -73,3 +71,10 @@ class TestMemoize(unittest.TestCase):
             @memoize
             def a_property(self):
                 return self.a_method()
+
+        obj = TestClass()
+        obj.a_method = MagicMock(return_value=42)
+        result_1 = obj.a_property  # a_property called once
+        result_2 = obj.a_property  # returns memoized result
+        self.assertEqual(result_1, result_2)
+        obj.a_method.assert_called_once()
